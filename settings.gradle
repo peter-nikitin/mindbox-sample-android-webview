@@ -1,0 +1,15 @@
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        jcenter() // Warning: this repository is going to shut down soon
+
+        maven {
+            url "https://www.jitpack.io"
+            credentials { username "jp_bn1de9aaq37kvf25sf536boctd" }
+        }
+    }
+}
+rootProject.name = "MindboxJsSdkTest"
+include ':app'
