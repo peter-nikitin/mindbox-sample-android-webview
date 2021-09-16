@@ -27,35 +27,39 @@ class MainActivity : AppCompatActivity() {
         val manager = CookieManager.getInstance()
         manager.setAcceptCookie(true);
 
-        Mindbox.subscribeDeviceUuid {
-            manager.setCookie(URL, "mindboxDeviceUUID=$it")
-        }
         val settings = binding.webView.settings
         settings.javaScriptEnabled = true
 
         binding.webView.loadUrl(URL)
+        binding.webView.getSettings().domStorageEnabled = true
+
+
         binding.viewCookies.setOnClickListener {
-            Log.d(TAG, "cookies ::: ${manager.getCookie(URL)} task2")
+            Log.d(TAG, "cookies ::: ${manager.getCookie(URL)} Cookie for $URL")
 
             Mindbox.subscribeDeviceUuid {
                 Log.d(TAG, "mindboxDeviceUUID=$it")
             }
-        }
 
-        binding.setCookies.setOnClickListener {
-            val manager = CookieManager.getInstance()
+            binding
+                .webView
+                .evaluateJavascript("(function() {return window.localStorage.getItem('mindboxDeviceUUID')})()"
+                ) { s ->
+                    android.util.Log.d(
+                        TAG,
+                        (s)!!
+                    ) // Prints the string 'null' NOT Java null
+                };
+        }
+        fun syncMindboxDeviceUUID(webView: WebView){
             Mindbox.subscribeDeviceUuid { uuid ->
-                val cookieString = manager.getCookie(URL)
-                manager.removeAllCookies { }
-                cookieString
-                    .split(";")
-                    .map(String::trim)
-                    .forEach { cookie ->
-                        val cookie = cookie.takeIf { !it.startsWith("mindboxDeviceUUID") }
-                            ?: "mindboxDeviceUUID=$uuid"
-                        manager.setCookie(URL, cookie)
+                webView
+                    .evaluateJavascript("document.cookie = \"mindboxDeviceUUID=$uuid\";  window.localStorage.setItem('mindboxDeviceUUID', '$uuid')"
+                    ) { };
                     }
             }
+        binding.setCookies.setOnClickListener {
+            syncMindboxDeviceUUID(binding.webView)
         }
     }
 }
