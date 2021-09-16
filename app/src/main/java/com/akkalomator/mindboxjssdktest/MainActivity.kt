@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.webkit.CookieManager
+import android.webkit.WebView
 import cloud.mindbox.mobile_sdk.Mindbox
 import com.akkalomator.mindboxjssdktest.databinding.ActivityMainBinding
 
